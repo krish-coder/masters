@@ -1,0 +1,75 @@
+-> When distribution is given finding mean is MAC of probability and data
+
+-> When distribution is not given we may assume uniform distribution and solve for mean
+
+-> Most problem states that equal distribution is the solution.
+
+-> Mean or median or mode are values that can represent an entire dataset with single number
+
+-> When we need to analyse outliers we use median as our central idea. That is what is done by box plot.
+
+-> Box plot has median as center and other quartile as hinges
+
+-> Thus if an outlier (value way off than what we expect) exists in the dataset it can be found way below or above InterQuartile Range (IQR)
+
+-> Just like how Mean is wrt outliers for Median, Standard deviation is for Interquartile difference.
+
+-> Median is directly read out of box plot and so is 25th percentile and 75th percentile
+
+-> Histograms give the frequency info in a plot or probability distribution plot
+
+-> Mode can be directly read from the histogram plot
+
+-> Mean and Median needs to be found and cannot be always read from the plot (in some case we can)
+
+-> Mean = sum(prob*values)
+
+-> Median = sum of distrbution values till half the number of values are reached then read the data value
+
+-> Pie and bar charts are jus visual tool to represent variation of categorical variables with numeric values
+
+-> Histogram is implemented with bar charts where the variation of frequency for different categories is represented
+
+-> scatter plots are used for finding associations between two numeric variables
+
+-> We can do associations of data points like clustering, regression , etc
+
+-> collection of scatter plots in matrix format is pairplot in seaborn
+
+-> Seaborn barplot can directly be applied instead of applying groupby then estimator like mean/median and then bar plot
+
+-> pass data as data frame name, x as groupby column, y as index aggrgate column and estimator as aggregate function type
+
+matplotlib -> plt.box(), plt.hist(), plt.bar(), plt.pie(), plt.scatter()
+pandas -> df.plot.box(), df.plot.hist(), df.plot.bar(), df.plot.pie(), df.plot.scatter()
+seaborn-> sns.boxplot()(box plot with groupby features) , sns.distplot()(hist plot with distribution ans aesthetics features), sns.barplot()(bar plot with groupby features ), ,sns.jointplot()(scatter plot with regression features), sns.pairplot()(relationship matrix)
+
+snippets
+-----------
+sns.barplot(data=inp0, x='Content Rating', y='Rating', estimator=np.median)
+sns.boxplot(data=inp0, x='Content Rating', y='Rating')
+----------
+
+-> Heatmaps are used to visualize relationships of 3 variables like a target and two independent variables
+
+-> this is what correlation matrix gives us. heatmaps need a matrix of variation and not jus a numeric sequence variance 
+
+-> the plot is not 1D but 2D
+
+-> For categorical vs numeric we used a bar graph
+
+-> here we will have two categorical variables with numeric matrix (if independent variable are not categorical convert 
+them into categorical variable)
+
+pivot_table
+------------
+pd.pivot_table(data=inp0, index='Content Rating', values='Rating', aggfunc='median') for 1D sequence
+
+pd.pivot_table(data=inp0, index='Content Rating', values='Rating', columns = 'Size_category', aggfunc='median') for 2D matrix
+
+Heat map are created using sns.heatmap(cor_matrix)
+
+
+
+
+

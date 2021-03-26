@@ -1,0 +1,94 @@
+consider the reshape of array created by
+
+a1 = np.arange(24)
+
+array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
+       17, 18, 19, 20, 21, 22, 23])
+
+Now for reshaping always look from the last dimension
+
+a1.reshape(2, 3, 4)
+
+array([[[ 0,  1,  2,  3],
+        [ 4,  5,  6,  7],
+        [ 8,  9, 10, 11]],
+
+       [[12, 13, 14, 15],
+        [16, 17, 18, 19],
+        [20, 21, 22, 23]]])
+
+similarly
+
+a1.reshape(3,4,2)
+
+array([[[ 0,  1],
+        [ 2,  3],
+        [ 4,  5],
+        [ 6,  7]],
+
+       [[ 8,  9],
+        [10, 11],
+        [12, 13],
+        [14, 15]],
+
+       [[16, 17],
+        [18, 19],
+        [20, 21],
+        [22, 23]]])
+--------------------------------------------------------------------------------------------
+
+While analysing a multidimensional array, leave the first bracket, look from left to right for last dimension and top to bottom for remaining
+
+array([[[ 0,  1,  2,  3],
+        [ 4,  5,  6,  7],
+        [ 8,  9, 10, 11]],
+
+       [[12, 13, 14, 15],
+        [16, 17, 18, 19],
+        [20, 21, 22, 23]]])
+
+
+shape is (2, 3, 4)
+
+-----------------------------------------------------------------------------------------------------------
+
+horizontal and vertical stacking refers to stacking one array beside another and one array below another respectively 
+Hence the name
+
+Hence for horizontal stacking the number of rows must be same for both arrays
+
+for vertical stacking the number of columns must be same
+
+a1 = [[1,2],[3,4]]
+
+b1 = [[5,6],[7,8]]
+
+c1 = [9,1,2,5]
+
+h = np.hstack((a1, b1))
+v = np.vstack((h,c1))
+
+array([[1, 2, 5, 6],
+       [3, 4, 7, 8],
+       [9, 1, 2, 5]])
+
+--------------------------------------------------------------------------------------------------------
+
+When we are forced to work with functions which are unaware of numpy, that is it only uses python lists,
+We can vectorize this by explicitely using np.vectorize
+
+# here x is a list
+def func(x):
+ return x/(x+1)
+
+result = np.vectorize(func)
+
+
+
+
+
+
+
+
+
+
