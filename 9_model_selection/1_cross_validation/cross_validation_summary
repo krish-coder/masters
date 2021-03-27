@@ -1,0 +1,120 @@
+import os
+import pandas as pd
+import numpy as np
+
+import warnings
+warnings.filterwarnings('ignore')
+
+### Read data
+df = pd.read_csv('Housing.csv')
+df.head()
+
+
+### NULL value analysis
+df.info()
+
+### Binary categorical data to numeric form
+var_list = ['mainroad', 'guestroom', 'basement', 'hotwaterheating', 'airconditioning', 'prefarea']
+df[var_list] = df[var_list].apply(lambda x: x.map({'no':0, 'yes':1}))
+df[var_list].head()
+
+
+### Convert categorical data to one hot encoding
+status_ = pd.get_dummies(df.furnishingstatus, drop_first=True)
+df_ = pd.concat([df, status_], axis=1)
+df_ = df_.drop(['furnishingstatus'], axis=1)
+df_.head()
+
+
+### Train test split of data
+from sklearn.model_selection import train_test_split
+df_train, df_test = train_test_split(df_, train_size=0.7, random_state=10)
+
+### Scaling of numeric data (always fit transform for train and only transform for test)
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+num_list = ['price','area', 'bedrooms', 'bathrooms', 'stories', 'parking']
+df_train[num_list] = scaler.fit_transform(df_train[num_list])
+df_test[num_list] = scaler.transform(df_test[num_list])
+
+
+### Get X_data, y_data
+y_train = df_train.pop('price')
+X_train = df_train.copy()
+y_test = df_test.pop('price')
+X_test = df_test.copy()
+
+### Perform Hyperparameter tuning with RFE as estimator in grid search and Linear regression with cross validation to decide the 
+### hyperparameter number of features
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression()
+lm.fit(X_train, y_train)
+
+### To perform cross validation on a single feature (not hyperparameter tuning as feature is fixed)
+### and understand the kfold concept
+from sklearn.model_selection import cross_val_score
+from sklearn.model_Selection import train_test_split
+from sklearn.model_selection import KFold
+lm = LinearRegression()
+cross_val_score(lm, X_train, y_train, scoring='r2', n=5)
+### Instead of n=5 we may create folds and pass
+folds = KFold(n_splits=5, shuffle=True, random_state=10)
+
+### Hyperparameter Tuning for number of features using grid search cross validation
+##### Dont specify the number of features since that will be the hyperparameter for tuning
+from sklearn.model_selection import cross_val_score
+from sklearn.model_Selection import train_test_split
+from sklearn.model_selection import KFold
+from sklearn.model_Selection import GridSearchCV
+from sklearn.feature_selection import RFE
+### Things needed by gridsearch are
+$ hyperparameter values for features as dictionary
+$ RFE object for model type like regression
+$ Kfold object for train data splits
+$ Metric for scoring
+$ return train flag
+
+hyper_parameters = [{'n_features_to_select' : list(range(1,14))}]
+
+lm = LinearRegression()
+lm.fit(X_train, y_train)
+rfe = RFE(lm)
+
+folds = KFold(shuffle=True, random_state=10)
+
+model_cv = GridSearchCV(estimator=rfe,
+                            param_grid=hyper_parameters,
+                            scoring='r2',
+                            cv=folds,
+                            verbose=1,
+                            return_train_score=True
+                           )
+
+model_cv.fit(X_train, y_train)
+
+### Get the results as data frame with important columns
+cv_Results = pd.DataFrame(model_cv.cv_results_)
+imp_cols=['param_n_features_to_select', 'mean_test_score', 'mean_train_score']
+cv_Results[imp_cols]
+
+### Plot number of features vs metric
+
+plt.plot(cv_Results.param_n_features_to_select, cv_Results.mean_test_score, label='test')
+plt.plot(cv_Results.param_n_features_to_select, cv_Results.mean_train_score, label='train')
+plt.xlabel('num_features')
+plt.ylabel('r2_score')
+plt.legend(loc='upper left')
+plt.show()
+
+### Get prediction metric with optimal model (best hyperparameter result) for test data
+lm = LinearRegression()
+lm.fit(X_train, y_train)
+
+rfe = RFE(lm, 11)
+rfe.fit(X_train, y_train)
+
+y_pred = rfe.predict(X_test)
+r2_score(y_pred, y_test)
+
+rfe = RFE(lm)
+

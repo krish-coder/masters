@@ -1,0 +1,91 @@
+# all machine learning related
+# for preprocessing data like train-test split
+import sklearn
+import sklearn.model_selection import train_test_split
+
+# all statistical processing
+import statsmodels
+import statsmodels.api as sm
+
+# for evaluation of model
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
+
+# linear regression with sklearn
+from sklearn.linear_model import LinearRegression
+
+# For scaling the data
+from sklearn.preprocessing import MinMaxScaler
+
+1) Read data
+  * read_csv
+
+2) understanding data
+  * head
+  * shape
+  * info
+  * describe
+
+3) Visualise
+  * scatter plot
+  * pairplot
+     sns.pairplot(data=df, x_vars=['TV','Radio','Newspaper'], y_vars='Sales')
+  * histogram
+  * heatmap
+     sns.heatmap(df.corr(), annot=True)
+  * regplot
+     sns.regplot(data=df, x='TV', y='Sales')
+
+4) split into train and test sets
+  * Divide in 70:30 or 80:20 ratio 
+     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.70, random_state=100)
+  * For intercept make feature adjustment
+     X_train_sm = sm.add_constant(X_train)
+
+5) Fit a model
+  * fit a model
+     lr = sm.OLS(y_train, X_train_sm)
+     lr_model = lr.fit()
+
+6) get results
+  * lr_model.params
+  * lr_model.summary()
+
+7) Predict and plot the result
+   y_train_pred = lr_model.predict(X_train_sm)
+   plt.scatter(X_train, y_train)
+   plt.plot(X_train, y_train_pred, 'r')
+   plt.show()
+
+8) Residual analysis
+   res = y_train-y_train_pred
+   sns.distplot(res)
+   plt.show()
+   plt.scatter(X_train, res)
+   plt.show()
+
+9) Predictions for test set
+   X_test_sm = sm.add_constant(X_test)
+   y_test_pred = lr_model.predict(X_test_sm)
+   plt.scatter(X_test, y_test)
+   plt.plot(X_test, y_test_pred, 'r')
+
+10) Evaluation of model
+    np.sqrt(mean_squared_error(y_test, y_test_pred))
+    r_squared = r2_score(y_test, y_test_pred)
+
+
+SKLearn
+
+1) X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.70, random_state=100)
+
+2) lm = LinearRegression()
+   lm.fit(train_X, train_y)
+
+3) print(lm.coef_, lm.intercept_)
+
+4) train_y_pred = lm.predict(train_X)
+   test_y_pred = lm.predict(test_X)
+
+5) r2_score(train_y, train_y_pred)
+   r2_score(test_y, test_y_pred)
